@@ -2,6 +2,34 @@
 $fgc = file_get_contents('data.txt');
 $telemetry = explode('||', $fgc);
 $telemetry = array_slice($telemetry, 0, count($telemetry)-1);
+// TODO:
+// Read all the entries
+// Combine entries
+// Rename as telemetry
+$data = array();
+foreach($telemetry as $t) {
+    if (key_exists(explode(",", $t)[0], $data)) {
+        $old = $data[explode(",", $t)[0]];
+        $new = array_slice(explode(",", $t), 1);
+        if($old != $new) {
+            for($i = 0; $i < count($old); $i++) {
+                if(ctype_space($old[$i]) || ctype_space($new[$i])) {
+                    $data[explode(",", $t)[0]] = $old[$i].$new[$i];
+                } else {
+                    $old[explode(",", $t)[0]] = $old[$i].";".$new[$i];
+                }
+            }
+        }
+    } else {
+        $data[explode(",", $t)[0]] = array_slice(explode(",", $t) , 1);
+    }
+}
+// recombine into telemetry
+$count = 0;
+foreach($data as $key => $value) {
+    $telemetry[$count] = $key.",".implode(",",$value);
+    $count++;
+}
 ?>
 <!doctype html>
 <html>
@@ -32,28 +60,30 @@ $telemetry = array_slice($telemetry, 0, count($telemetry)-1);
                             <td>High/low and left/right/center goal?</td>
                             <td>Climbing</td>
                             <td>Autonomous</td>
+                            <td>Match Notes</td>
                             <td>Picture</td>
                         </tr>
                     </thead>
                     <tbody>
-			<?php
-                        foreach($telemetry as $dataset) {
-                            ?>
-			<tr>
-			<?php $data = explode(",", $dataset);
-			for($i = 0; $i < count($data) - 1; $i++) {
-				?>
-			<td><?php
-			if($i < 9) { 
-				echo $data[$i]; 
-			} else {
-?>			<img width="100px;" src="<?php echo $data[$i+1]; ?>"/> <?php
-			}
-			?></td><?php } ?>
-			</tr>
-			<?php } ?>
-                  </tbody>
-	</table>
+                        <?php
+                        foreach($telemetry as $t) { ?>
+                            <tr>
+                                <?php
+                                $t = explode(",",$t);
+                                for($i = 0; $i < count($t); $i++) {
+                                    if($i != 9 && $i != count($t) && $i != 2) { ?>
+                                        <td><?php echo $t[$i];?></td>
+                                    <?php
+                                } else if ($i == count($t)) {
+                                    ?><td><img src="<?php echo $t[$i]; ?>"></td><?php
+                                }
+                                }
+                                ?>
+                            </tr>
+                        <?php }
+                         ?>
+                    </tbody>
+	    </table>
 	</div>
 </div>
-</body>		
+</body>

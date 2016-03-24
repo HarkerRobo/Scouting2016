@@ -79,6 +79,10 @@ $teams = json_decode($request->getBody()->getContents(), true);
                         <input type="hidden" name="MAX_FILE_SIZE" value="30000000" />
                         <input type="file" name="picture">
                     </div>
+                    <div class="form-group">
+                        <label>Match Notes</label>
+                        <textarea  type="text" class="form-control" name="match_notes" value=""></textarea>
+                    </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
             </div>
