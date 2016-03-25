@@ -71,12 +71,15 @@ foreach($data as $key => $value) {
                                 <?php
                                 $t = explode(",",$t);
                                 for($i = 0; $i < count($t); $i++) {
-                                    if($i != 9 && $i != count($t) && $i != 2) { ?>
-                                        <td><?php echo $t[$i];?></td>
-                                    <?php
-                                } else if ($i == count($t)) {
-                                    ?><td><img src="<?php echo $t[$i]; ?>"></td><?php
-                                }
+                                    ?> <td><?php
+                                    if ($t[$i] != "30000000") {
+                                        if (substr($t[$i], 0, strlen("./images")) == "./images") {
+                                            ?><img src="<?php echo $t[$i];?>"><?php
+                                        } else {
+                                            echo $t[$i];
+                                        }
+                                    }
+                                    ?></td> <?php
                                 }
                                 ?>
                             </tr>
